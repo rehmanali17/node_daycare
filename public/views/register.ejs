@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+</head>
+<style>
+  a{
+      margin-right: 12px;
+    }
+    a:hover{
+      transform: scale(1.1);
+      transition: .3s linear;
+    }
+</style>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-primary">
+    <div class="container-fluid">
+      <a style="font-size: 35px; color:white;" class="navbar-brand" href="/">DayCare</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav ml-auto">
+          <a style="font-size: 20px; color:white;" class="nav-link" href="/">Plans</a>   
+          <a style="font-size: 20px; color:white;" class="nav-link" href="/contact">Contact Us</a>
+          <a style="font-size: 20px; color:white;" class="nav-link" href="/register">Register</a>
+          <a style="font-size: 20px; color:white;" class="nav-link" href="/login" >Log in</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+    <h1 class="text-center  mb-4 mt-5 display1 text-primary">Sign Up</h1>
+    <div class="container">
+      <% if (errors.length > 0) { %>
+      <% errors.forEach((error)=>{ %>
+        <p class="text-center w-100 alert alert-danger mb-2"><%= error.msg %> </p>
+     <% })  %>
+     <% } %>
+        <div class="row">
+            <div class="col-lg-6 m-lg-auto col-md-8 m-md-auto col-sm-10 m-sm-auto">
+                <form method="post" action="/register" name="addForm">
+                    <div class="mb-4">
+                        <input type="email" class="form-control" name="email" placeholder="Email">
+                    </div>
+                    <div class="mb-4">
+                        <input type="text" class="form-control" name="name" placeholder="Name">
+                    </div>
+                    <div class="mb-4">
+                        <input type="password" class="form-control" name="password" placeholder="Password">
+                    </div>
+                    <div class="mb-4">
+                        <input type="text" class="form-control" name="address" placeholder="Address">
+                    </div>
+                    <div class="mb-4">
+                        <input type="text" class="form-control" name="phone" placeholder="Phone">
+                    </div>
+                    <a href="/login">Already have an account? Log In</a>
+                    <div class="row">
+                        <div class="col-sm-2 col-3 ml-auto mr-auto mb-5 mt-3">
+                            <input class="btn btn-primary" type="submit" name="save-button" value="Register">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

@@ -1,0 +1,66 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plans</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+</head>
+<style>
+    a{
+        margin-right: 12px;
+      }
+      a:hover{
+        transform: scale(1.1);
+        transition: .3s linear;
+      }
+</style>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-primary">
+        <div class="container-fluid">
+          <a style="font-size: 35px; color:white;" class="navbar-brand" href="/">DayCare</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav ml-auto">
+              <a style="font-size: 20px; color:white;" class="nav-link" href="/">Plans</a>   
+              <a style="font-size: 20px; color:white;" class="nav-link" href="/contact">Contact Us</a>
+              <a style="font-size: 20px; color:white;" class="nav-link" href="/register">Register</a>
+              <a style="font-size: 20px; color:white;" class="nav-link" href="/login" >Log in</a>
+            </div>
+          </div>
+        </div>
+      </nav>
+    <div class="container mt-5">
+        <div class="row">
+            <% if (plans.length > 0) { %>
+            <% plans.forEach((row)=>{ %>
+            <div class="col-md-4 col-sm-6 mb-5 mx-sm-0 gy-2 mx-5 px-sm-3 px-5 d-flex align-items-stretch">
+                <div class="card" >
+                    <img src="../images/day-care1.jpg" class="card-img-top" alt="Day Care">
+                    <div class="card-body">
+                        <h5 class="card-title"><%= row.title %> </h5>
+                        <p class="card-text">Day Care Plan</p>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">Trial Period: <%= row.trial %> </li>
+                        <li class="list-group-item">Duration: <%= row.duration %></li>
+                        <li class="list-group-item">Time Duration: <%= row.time_duration %> </li>
+                        <li class="list-group-item">Price: <%= row.price %> $</li>
+                    </ul>
+                    <div class="card-body text-center">
+                        <a class="btn btn-outline-primary" href="./user/Buy-plan.php?id=<?php echo $row['id'] ?>" class="card-link">Buy</a>
+                    </div>
+                </div>
+            </div>
+            <% })}else { %>
+              <p class="text-center alert alert-danger w-100">No records found</p>
+           <% }%>
+        </div>
+    </div>
+</body>
+
+</html>
