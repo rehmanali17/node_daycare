@@ -1,0 +1,74 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plans</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="icon" href="../images/day-care1.jpg" type="image/gif" sizes="16x16">
+</head>
+<style>
+    a{
+        margin-right: 12px;
+      }
+      a:hover{
+        transform: scale(1.1);
+        transition: .3s linear;
+      }
+</style>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-primary">
+        <div class="container-fluid">
+          <a style="font-size: 35px; color:white;" class="navbar-brand" href="/">DayCare</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav ml-auto">
+              <a style="font-size: 20px; color:white;" class="nav-link" href="/">Plans</a>   
+              <a style="font-size: 20px; color:white;" class="nav-link" href="/contact">Contact Us</a>
+              <a style="font-size: 20px; color:white;" class="nav-link" href="/register">Register</a>
+              <a style="font-size: 20px; color:white;" class="nav-link" href="/login" >Log in</a>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+<div class="container mt-4">
+    <h1 class="text-center text-primary mb-4">Contact Us</h1>
+    
+    
+    <% if(errors.length > 0){ %>
+        <% errors.forEach((error)=>{ %>
+            <p class="text-center w-100 alert alert-danger"><%= error.msg %></p>
+   <% })} %>
+   <% if(msgs.length > 0){ %>
+    <% msgs.forEach((msg)=>{ %>
+        <p class="text-center w-100 alert alert-success"><%= msg.msg %></p>
+<% })} %>  
+        
+    <form class="row g-3" action="/contact" method="post">
+      <div class="col-md-6 mb-4">
+        <input type="email" class="form-control" name="email" placeholder="Email" required>
+      </div>
+      <div class="col-md-6 mb-4">
+        <input type="text" class="form-control" name="phone" placeholder="Phone" required>
+      </div>
+      <div class="col-12 mb-4">
+        <input type="text" class="form-control" name="address" placeholder="1234 Main St" required>
+      </div>
+      <div class="col-12 mb-4">
+        <textarea rows="5" type="text" class="form-control" name="message" required>Message</textarea>
+      </div>
+      <div class="text-center mx-auto mb-sm-0 mb-3 mt-5">
+        <button type="submit" name="save-button" class="btn btn-primary">Send</button>
+      </div>
+    </form>
+    </div>
+
+    <script src="../js/jquery.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+      </body> 
+    </html>

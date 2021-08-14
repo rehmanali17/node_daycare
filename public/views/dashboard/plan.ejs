@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="icon" href="../../images/day-care1.jpg" type="image/gif" sizes="16x16">
+</head>
+<style>
+    a{
+      margin-right: 12px;
+    }
+    a:hover{
+      transform: scale(1.1);
+      transition: .3s linear;
+    }
+    </style>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-primary">
+        <div class="container-fluid">
+          <a style="font-size: 35px; color:white;"  class="navbar-brand" href="/">DayCare</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav ml-auto">
+              <a style="font-size: 20px; color:white;"  class="nav-link" href="/">Buy Plans</a>   
+              <a style="font-size: 20px; color:white;" class="nav-link" href="/user/">My Plans</a>
+              <a style="font-size: 20px; color:white;" class="nav-link" href="/user/update_profile">Update Profile</a>
+              <a style="font-size: 20px; color:white;" class="nav-link" href="/user/logout" >Log Out</a>
+            </div>
+          </div>
+        </div>
+      </nav>
+    <h1 class="text-center mb-md-5 mb-sm-4 mt-5 display1 text-primary">Plan</h1>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-sm-6 mb-5 mx-sm-auto  mx-5 d-flex align-items-stretch">
+                <div class="card">
+                    <img src="../../images/day-care1.jpg" class="card-img-top" alt="Day Care">
+                    <div class="card-body">
+                        <h5 class="card-title"><%= plan.title %></h5>
+                        <p class="card-text">Day Care Plan</p>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">Trial Period: <%= plan.trial %></li>
+                        <li class="list-group-item">Duration: <%= plan.duration %></li>
+                        <li class="list-group-item">Time Duration: <%= plan.time_duration %></li>
+                        <li class="list-group-item">Price: <%= plan.price %>$</li>
+                        <li class="list-group-item">Time Slot: <%= time %></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col text-center mb-4">
+        <a href="/user/" ><- Back to Home</a>
+            
+            </div>        
+        </div>
+    </div>
+</body>
+
+</html>

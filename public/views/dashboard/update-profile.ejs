@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="../../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="icon" href="../../images/day-care1.jpg" type="image/gif" sizes="16x16">
+</head>
+<style>
+    a{
+      margin-right: 12px;
+    }
+    a:hover{
+      transform: scale(1.1);
+      transition: .3s linear;
+    }
+    </style>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-primary">
+        <div class="container-fluid">
+          <a style="font-size: 35px; color:white;"  class="navbar-brand" href="/">DayCare</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav ml-auto">
+              <a style="font-size: 20px; color:white;"  class="nav-link" href="/">Buy Plans</a>   
+              <a style="font-size: 20px; color:white;" class="nav-link" href="/user/">My Plans</a>
+              <a style="font-size: 20px; color:white;" class="nav-link" href="/user/update_profile">Update Profile</a>
+              <a style="font-size: 20px; color:white;" class="nav-link" href="/user/logout" >Log Out</a>
+            </div>
+          </div>
+        </div>
+      </nav>
+<div class="container">
+    <h1 class="text-center text-primary mt-4 mb-4">Update Profile</h1>
+
+    <% if(errors.length > 0){ %>
+        <% errors.forEach((error)=>{ %>
+            <p class="text-center w-100 alert alert-danger"><%= error.msg %></p>
+   <% })} %>
+   <% if(msgs.length > 0){ %>
+    <% msgs.forEach((msg)=>{ %>
+        <p class="text-center w-100 alert alert-success"><%= msg.msg %></p>
+<% })} %> 
+
+    <div class="row">
+        <div class="col-lg-6 m-lg-auto col-md-8 m-md-auto col-sm-10 m-sm-auto">
+                
+            <form  method="post">
+                <div class="mb-4">
+                    <label for="name" class="form-label">Name</label>
+                    <input type="text" class="form-control" name="name" value="<%= user.u_name%>" required>
+                </div>
+                <div class="mb-4">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" name="password" required>
+                </div>
+                <div class="mb-4">
+                    <label for="address" class="form-label">Address</label>
+                    <input type="text" class="form-control" name="address" value="<%= user.u_address%>" required>
+                </div>
+                <div class="mb-4">
+                    <label for="phone" class="form-label">Phone</label>
+                    <input type="text" class="form-control" name="phone" value="<%= user.u_phone%>" required>
+                </div>
+                <div class="row">
+                    <div class="col-sm-2 col-3 ml-auto mr-auto mb-5 mt-3">
+                        <button class="btn btn-primary" type="submit" name="update-btn">Update</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

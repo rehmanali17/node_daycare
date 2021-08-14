@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Plans</title>
     <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="icon" href="../images/day-care1.jpg" type="image/gif" sizes="16x16">
 </head>
 <style>
     a{
@@ -49,10 +50,10 @@
                         <li class="list-group-item">Trial Period: <%= row.trial %> </li>
                         <li class="list-group-item">Duration: <%= row.duration %></li>
                         <li class="list-group-item">Time Duration: <%= row.time_duration %> </li>
-                        <li class="list-group-item">Price: <%= row.price %> $</li>
+                        <li class="list-group-item">Price: <%= row.price %>$</li>
                     </ul>
                     <div class="card-body text-center">
-                        <a class="btn btn-outline-primary" href="./user/Buy-plan.php?id=<?php echo $row['id'] ?>" class="card-link">Buy</a>
+                        <a class="btn btn-outline-primary" href="user/buy_plan/<%= row.id %> " class="card-link">Buy</a>
                     </div>
                 </div>
             </div>
@@ -61,6 +62,9 @@
            <% }%>
         </div>
     </div>
-</body>
+<script src="../js/jquery.min.js"></script>
+<script src="../js/bootstrap.min.js"></script>
+  </body>
+
 
 </html>
