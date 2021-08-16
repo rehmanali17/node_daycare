@@ -4,6 +4,10 @@ const mysql = require("mysql");
 const bcrypt = require("bcrypt");
 const session = require('express-session');
 const flash = require('connect-flash');
+const jwt = require('jsonwebtoken');
+const keys = require('./config');
+const {LocalStorage} = require('node-localstorage');
+const localStorage = new LocalStorage('./scratch');
 const { check, validationResult, checkSchema, body, query } = require('express-validator');
 
 const app = express();
@@ -23,11 +27,15 @@ app.use(session({
 app.use(flash());
 
 const auth = (req,res,next) =>{
-    if(req.session.user){
-        next();
-    }else{
-        res.redirect('/');
-    }
+    let token = localStorage.getItem('token');
+    jwt.verify(token,keys.jwtkey,(err,data)=>{
+        if(err){
+            res.redirect('/login')
+        }else{
+            req.userData = data.user
+            next();
+        }
+    })
 }
 
 const conn = mysql.createConnection({
@@ -61,11 +69,14 @@ app.get("/",(req,res)=>{
 // Login Routes
 
 app.get('/login',(req,res)=>{
-    if(req.session.user){
-        res.redirect('/user/')
-    }else{
-        res.render('login',{errors:[]});
-    }
+    let token = localStorage.getItem('token');
+    jwt.verify(token,keys.jwtkey, (err, data)=>{
+        if(err){
+            res.render('login',{errors:[]});
+        }else{
+            res.redirect('/user/')
+        }
+    })
     
 })
 
@@ -88,7 +99,8 @@ app.post('/login',[
                     if(!isMatch){
                         res.render("login",{errors:[{'msg':'Incorrect Credentials'}]});
                     }else{
-                        req.session.user = user.u_email;
+                        let token = jwt.sign({user},keys.jwtkey , { expiresIn: '60s'})
+                        localStorage.setItem('token',token);
                         res.redirect('/user/');
                     }
                     
@@ -133,7 +145,8 @@ app.post("/register",[
                     conn.query(query,(err,result)=>{
                         if(!err){
                             if(result.affectedRows == 1){
-                                req.session.user = email;
+                                let token = jwt.sign({user},keys.jwtkey , { expiresIn: '60s'})
+                                localStorage.setItem('token',token);
                                 res.redirect('/user/');
                             }
                         }
@@ -180,11 +193,11 @@ app.post("/contact",[
 
 app.get('/user/',auth,(req,res)=>{
     var sql = "select plan.title,plans_bought.id,plans_bought.p_id,plans_bought.p_time from plans_bought inner join plan on plans_bought.p_id=plan.id where plans_bought.u_email=? order by plans_bought.p_id,plans_bought.p_time";
-    let user = req.session.user;
+    let user = req.userData.u_email;
     sql = mysql.format(sql,[user]);
     conn.query(sql,(err,result)=>{
         if(!err){
-            res.render("dashboard/index",{plans:result, user:req.session.user, msg: req.flash('message') });
+            res.render("dashboard/index",{plans:result, user:req.userData.u_email, msg: req.flash('message') });
         }
     })
 })
@@ -213,9 +226,9 @@ app.get('/user/buy_plan/:id',auth,(req,res)=>{
     })
 })
 
-app.post('/user/buy_plan',(req,res)=>{
+app.post('/user/buy_plan',auth,(req,res)=>{
     const { id , time } = req.body
-    const user = req.session.user
+    const user = req.userData.u_email
     var sql = "INSERT into plans_bought(p_id,u_email,p_time) VALUES(?,?,?)";
     sql = mysql.format(sql,[id,user,time]);
     conn.query(sql,(err,result)=>{
@@ -229,7 +242,7 @@ app.post('/user/buy_plan',(req,res)=>{
 })
 
 app.get('/user/update_profile',auth,(req,res)=>{
-    let email = req.session.user;
+    let email = req.userData.u_email;
     var sql = "SELECT * from users where u_email=?";
     conn.query(sql,[email],(err,result)=>{
         if(!err){
@@ -241,7 +254,7 @@ app.get('/user/update_profile',auth,(req,res)=>{
 
 
 
-app.post("/user/update_profile",[
+app.post("/user/update_profile",auth,[
     check('address','Enter a valid address').notEmpty(),
     check('phone','Enter a valid phone number').isNumeric(),
     check("name", "Enter the message").notEmpty(),
@@ -250,11 +263,10 @@ app.post("/user/update_profile",[
     }).withMessage('Enter 6 digits password containing numbers and characters'),
 ],async (req,res)=>{
     const errors = validationResult(req);
-    let email = req.session.user;
+    let email = req.userData.u_email;
     var rows = await dbquery("SELECT * from users where u_email=?",[email]);
     var user = rows[0]
     if(!errors.isEmpty()){
-        console.log(user)
         res.render("dashboard/update-profile",{errors:errors.array(), msgs:[], user: user})
     }else{
         const { address, name, password, phone } = req.body;
@@ -274,7 +286,7 @@ app.post("/user/update_profile",[
     }
 })
 
-app.post('/user/delete_plan',(req,res)=>{
+app.post('/user/delete_plan',auth,(req,res)=>{
     const { id } = req.body;
     var sql="DELETE from plans_bought where id=?";
     sql = mysql.format(sql,[id]);
@@ -290,7 +302,7 @@ app.post('/user/delete_plan',(req,res)=>{
 })
 
 app.get('/user/logout',(req,res)=>{
-    req.session.user = null;
+    localStorage.removeItem('token');
     res.redirect('/');
 })
 
