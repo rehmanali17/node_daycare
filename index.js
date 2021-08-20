@@ -4,8 +4,13 @@ const mysql = require("mysql");
 const bcrypt = require("bcrypt");
 const session = require('express-session');
 const flash = require('connect-flash');
+const passport = require('passport');
+const passportSetup = require('./passport-setup/passport-setup');
+const multer = require('multer');
+const path = require('path');
 const jwt = require('jsonwebtoken');
 const keys = require('./config');
+const conn = require('./dbconfig');
 const {LocalStorage} = require('node-localstorage');
 const localStorage = new LocalStorage('./scratch');
 const { check, validationResult, checkSchema, body, query } = require('express-validator');
@@ -25,26 +30,46 @@ app.use(session({
     cookie:{maxAge: 86400}
 }))
 app.use(flash());
+app.use(passport.initialize());
+app.use(passport.session());
 
 const auth = (req,res,next) =>{
     let token = localStorage.getItem('token');
-    jwt.verify(token,keys.jwtkey,(err,data)=>{
+    jwt.verify(token,keys.jwtkey, async (err,data)=>{
         if(err){
             res.redirect('/login')
         }else{
-            req.userData = data.user
+            let email = data.user
+            var rows = await dbquery("SELECT * from users where u_email=?",[email]);
+            var user = rows[0]
+            req.userData = user
             next();
         }
     })
 }
 
-const conn = mysql.createConnection({
-    host:'localhost',
-    user:'root',
-    password:'',
-    port:3306,
-    database:'daycare'
-});
+const storage = multer.diskStorage({
+    destination: './public/uploads',
+    filename: (req, file, cb) =>{
+        cb(null, file.fieldname + "-" + Date.now() + path.extname(file.originalname))
+    }
+})
+
+const upload = multer({
+    storage: storage,
+    limits: { fileSize: 10000000},
+    fileFilter: (req, file, cb)=>{
+        const ext = /jpeg|jpg|png|gif/;
+        let typecheck = ext.test(path.extname(file.originalname).toLowerCase())
+        let mimecheck = ext.test(file.mimetype);
+        if(typecheck && mimecheck){
+            cb(null,true);
+        }else{
+            cb("Only images are allowed!");
+        }
+    }
+}).single('profile-pic')
+
 
 conn.connect((err)=>{
     if(!err){
@@ -67,6 +92,20 @@ app.get("/",(req,res)=>{
 })
 
 // Login Routes
+
+app.get('/login/google', passport.authenticate('google', {scope: ['profile', 'email'] }));
+
+app.get('/login/google/redirect', passport.authenticate('google', { failureRedirect: '/login' }) ,(req, res)=>{
+    let token = jwt.sign({user: req.user.u_email},keys.jwtkey , { expiresIn: '15m'})
+    localStorage.setItem('token',token);
+    res.redirect('/login');
+})
+
+// app.get('/login/facebook', passport.authenticate('facebook', {scope: ['profile','email'] }));
+
+// app.get('/login/facebook/redirect', passport.authenticate('facebook'), (req, res)=>{
+//     res.redirect('/login')
+// })
 
 app.get('/login',(req,res)=>{
     let token = localStorage.getItem('token');
@@ -99,7 +138,7 @@ app.post('/login',[
                     if(!isMatch){
                         res.render("login",{errors:[{'msg':'Incorrect Credentials'}]});
                     }else{
-                        let token = jwt.sign({user},keys.jwtkey , { expiresIn: '60s'})
+                        let token = jwt.sign({user: user.u_email },keys.jwtkey , { expiresIn: '15m'})
                         localStorage.setItem('token',token);
                         res.redirect('/user/');
                     }
@@ -115,7 +154,7 @@ app.post('/login',[
 // Register Routes
 
 app.get("/register",(req,res)=>{
-    res.render("register",{errors:[]});
+    res.render("register",{errors:[], errmsg: ''});
 })
 
 app.post("/register",[
@@ -127,34 +166,44 @@ app.post("/register",[
     check('address','Enter a valid address').notEmpty(),
     check('phone','Enter a valid phone number').isNumeric()
 ],(req,res)=>{
-    const errors = validationResult(req);
-    if(!errors.isEmpty()){
-        res.render("register",{errors:errors.array()})
-    }else{
-        const { name, email, password, address, phone } = req.body;
-        var sql = "SELECT * from users where u_email=?";
-        conn.query(sql,[email], async (err,result)=>{
-            if(!err){
-                if(result.length > 0){
-                    res.render("register",{errors:[{'msg':'User already exits'}]})
-                }else{
-                    const salt = await bcrypt.genSalt(10)
-                    const hashedPassword = await bcrypt.hash(password,salt)
-                    var sql = "INSERT into users values(?,?,?,?,?)";
-                    let query = mysql.format(sql,[email,hashedPassword,name,address,phone]);
-                    conn.query(query,(err,result)=>{
-                        if(!err){
-                            if(result.affectedRows == 1){
-                                let token = jwt.sign({user},keys.jwtkey , { expiresIn: '60s'})
-                                localStorage.setItem('token',token);
-                                res.redirect('/user/');
-                            }
+    upload(req,res, (err)=>{
+        if(err){
+            let errmsg = err.message != undefined ? err.message : err
+            res.render("register",{errors:[], errmsg});
+        }else if(req.file == undefined){
+            res.render("register",{errors:[], errmsg: 'No file selected!'});
+        }else{
+            const errors = validationResult(req.body);
+            if(!errors.isEmpty()){
+                res.render("register",{errors:errors.array(), errmsg:''})
+            }else{
+                let filename = req.file.filename;
+                const { name, email, password, address, phone } = req.body;
+                var sql = "SELECT * from users where u_email=?";
+                conn.query(sql,[email], async (err,result)=>{
+                    if(!err){
+                        if(result.length > 0){
+                            res.render("register",{errors:[{'msg':'User already exits'}], errmsg:''})
+                        }else{
+                            const salt = await bcrypt.genSalt(10)
+                            const hashedPassword = await bcrypt.hash(password,salt)
+                            var sql = "INSERT into users(u_email,u_password,u_name,u_address,u_phone,image_url) values(?,?,?,?,?,?)";
+                            let query = mysql.format(sql,[email,hashedPassword,name,address,phone,filename]);
+                            conn.query(query,(err,result)=>{
+                                if(!err){
+                                    if(result.affectedRows == 1){
+                                        let token = jwt.sign({user: email},keys.jwtkey , { expiresIn: '15m'})
+                                        localStorage.setItem('token',token);
+                                        res.redirect('/user/');
+                                    }
+                                }
+                            })
                         }
-                    })
-                }
+                    }
+                })
             }
-        })
-    }
+        }
+    })
 })
 
 
@@ -197,7 +246,7 @@ app.get('/user/',auth,(req,res)=>{
     sql = mysql.format(sql,[user]);
     conn.query(sql,(err,result)=>{
         if(!err){
-            res.render("dashboard/index",{plans:result, user:req.userData.u_email, msg: req.flash('message') });
+            res.render("dashboard/index",{plans:result, user:req.userData, msg: req.flash('message') });
         }
     })
 })
@@ -208,7 +257,7 @@ app.get('/user/plan',auth,(req,res)=>{
     conn.query(sql,[id],(err,result)=>{
         if(!err){
             if(result.length > 0){
-               res.render('dashboard/plan',{ plan:result[0], time:time }) 
+               res.render('dashboard/plan',{ plan:result[0], time:time, url: req.userData.image_url }) 
             }
         }
     })
@@ -220,7 +269,7 @@ app.get('/user/buy_plan/:id',auth,(req,res)=>{
     conn.query(sql,[id],(err,result)=>{
         if(!err){
             if(result.length > 0){
-               res.render('dashboard/buy-plan',{ plan:result[0], id }) 
+               res.render('dashboard/buy-plan',{ plan:result[0], id , url: req.userData.image_url}) 
             }
         }
     })
@@ -246,7 +295,7 @@ app.get('/user/update_profile',auth,(req,res)=>{
     var sql = "SELECT * from users where u_email=?";
     conn.query(sql,[email],(err,result)=>{
         if(!err){
-            res.render("dashboard/update-profile",{errors: [], msgs:[], user:result[0]});
+            res.render("dashboard/update-profile",{errors: [], msgs:[], user:result[0], errmsg: ''});
         }
     })
     
@@ -261,29 +310,46 @@ app.post("/user/update_profile",auth,[
     check('password').isLength({
         min: 6
     }).withMessage('Enter 6 digits password containing numbers and characters'),
-],async (req,res)=>{
-    const errors = validationResult(req);
-    let email = req.userData.u_email;
-    var rows = await dbquery("SELECT * from users where u_email=?",[email]);
-    var user = rows[0]
-    if(!errors.isEmpty()){
-        res.render("dashboard/update-profile",{errors:errors.array(), msgs:[], user: user})
-    }else{
-        const { address, name, password, phone } = req.body;
-        var sql = "UPDATE users set u_name=?,u_password=?,u_phone=?,u_address=? where u_email=?";
-        sql = mysql.format(sql,[name,password,phone,address,email]);
-        conn.query(sql, async (err,result)=>{
-            if(!err){
-                if(result.affectedRows > 0){
-                    var rows = await dbquery("SELECT * from users where u_email=?",[email])
-                    var user = rows[0]
-                    res.render("dashboard/update-profile",{msgs:[{'msg':'Profile updated successfully'}], errors:[], user: user})
-                }else{
-                    res.render("dashboard/update-profile",{errors: [{'msg':'Error updating the profile'}], msgs:[], user: user});
-                }
+],(req,res)=>{
+upload(req,res, async (err) =>{
+    // console.log(req.body);
+    // console.log(req.file);
+        let email = req.userData.u_email;
+        var rows = await dbquery("SELECT * from users where u_email=?",[email]);
+        var user = rows[0]
+        if(err){
+            let errmsg = err.message != undefined ? err.message : err
+            res.render("dashboard/update-profile",{errors:[], msgs:[], user: user, errmsg})
+        }else if(req.file == undefined){
+            res.render("dashboard/update-profile",{errors:[], msgs:[], user: user, errmsg: 'No file selected' })
+        }
+        else{
+            let filename = req.file.filename;
+            const errors = validationResult(req.body);
+            if(!errors.isEmpty()){
+                res.render("dashboard/update-profile",{errors:errors.array(), msgs:[], user: user, errmsg: ''})
+            }else{
+                const { address, name, password, phone } = req.body;
+                const salt = await bcrypt.genSalt(10);
+                const hashedPassword = await bcrypt.hash(password, salt);
+                var sql = "UPDATE users set u_name=?,u_password=?,u_phone=?,u_address=?,image_url=? where u_email=?";
+                sql = mysql.format(sql,[name,hashedPassword,phone,address,filename,email]);
+                conn.query(sql, async (err,result)=>{
+                    if(!err){
+                        if(result.affectedRows > 0){
+                            var email = req.userData.u_email;
+                            var rows = await dbquery("SELECT * from users where u_email=?",[email]);
+                            var user = rows[0]
+                            res.render("dashboard/update-profile",{msgs:[{'msg':'Profile updated successfully'}], errors:[], user: user, errmsg:''})
+                        }else{
+                            res.render("dashboard/update-profile",{errors: [{'msg':'Error updating the profile'}], msgs:[], user: user, errmsg: ''});
+                        }
+                    }
+                })
             }
-        })
-    }
+}
+}
+)    
 })
 
 app.post('/user/delete_plan',auth,(req,res)=>{

@@ -6,7 +6,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Plans</title>
-    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/style.css">
     <link rel="icon" href="../images/day-care1.jpg" type="image/gif" sizes="16x16">
 </head>
 <style>
@@ -49,18 +50,21 @@
         <p class="text-center w-100 alert alert-success"><%= msg.msg %></p>
 <% })} %>  
         
-    <form class="row g-3" action="/contact" method="post">
+    <form class="row g-3" action="/contact" method="post" onsubmit="return handleSubmit()">
       <div class="col-md-6 mb-4">
-        <input type="email" class="form-control" name="email" placeholder="Email" required>
+        <input type="email" class="form-control" name="email" placeholder="Email" >
+        <p>Email should be valid: me@gmail.com</p>
       </div>
       <div class="col-md-6 mb-4">
-        <input type="text" class="form-control" name="phone" placeholder="Phone" required>
+        <input type="text" class="form-control" name="phone" placeholder="Phone" >
+        <p>Enter 11 digits phone number</p>
       </div>
       <div class="col-12 mb-4">
-        <input type="text" class="form-control" name="address" placeholder="1234 Main St" required>
+        <input type="text" class="form-control" name="address" placeholder="1234 Main St">
+        <p>Enter a valid Address</p>
       </div>
       <div class="col-12 mb-4">
-        <textarea rows="5" type="text" class="form-control" name="message" required>Message</textarea>
+        <textarea rows="5" type="text" class="form-control" name="message" ></textarea>
       </div>
       <div class="text-center mx-auto mb-sm-0 mb-3 mt-5">
         <button type="submit" name="save-button" class="btn btn-primary">Send</button>
@@ -70,5 +74,6 @@
 
     <script src="../js/jquery.min.js"></script>
     <script src="../js/bootstrap.min.js"></script>
+    <script src="../js/validations.js"></script>
       </body> 
     </html>

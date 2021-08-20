@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
     <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/style.css">
     <link rel="icon" href="../images/day-care1.jpg" type="image/gif" sizes="16x16">
 </head>
 <style>
@@ -43,22 +44,33 @@
      <% } %>
         <div class="row">
             <div class="col-lg-6 m-lg-auto col-md-8 m-md-auto col-sm-10 m-sm-auto">
-                <form method="post" action="/register" name="addForm">
+                <form method="post" action="/register" enctype="multipart/form-data" onsubmit="return handleSubmit()">
                     <div class="mb-4">
                         <input type="email" class="form-control" name="email" placeholder="Email">
+                        <p>Email should be valid: me@gmail.com</p>
                     </div>
                     <div class="mb-4">
                         <input type="text" class="form-control" name="name" placeholder="Name">
+                        <p>Name should be valid</p>
                     </div>
                     <div class="mb-4">
                         <input type="password" class="form-control" name="password" placeholder="Password">
+                        <p>Password should be atleast 6 digits alphanumeric</p>
                     </div>
                     <div class="mb-4">
                         <input type="text" class="form-control" name="address" placeholder="Address">
+                        <p>Enter a valid Address</p>
                     </div>
                     <div class="mb-4">
                         <input type="text" class="form-control" name="phone" placeholder="Phone">
+                        <p>Enter 11 digits phone number</p>
                     </div>
+                    <div class="mb-3">
+                      <input type="file" class="form-control" name="profile-pic" />
+                    </div>
+                    <% if (errmsg) { %>
+                        <p class="invalidfile mb-1"><%= errmsg %></p>
+                    <% } %>  
                     Already have an account? <a href="/login">Log In</a>
                     <div class="row">
                         <div class="col-sm-2 col-3 ml-auto mr-auto mb-5 mt-3">
@@ -70,6 +82,7 @@
         </div>
     </div>
 
+    <script src="../js/validations.js"></script>
 </body>
 
 </html>

@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/style.css">
     <link rel="icon" href="../images/day-care1.jpg" type="image/gif" sizes="16x16">
 </head>
 <style>
@@ -43,14 +44,16 @@
            <% } %>
         <div class="row">
             <div class="col-lg-6 m-lg-auto col-md-8 m-md-auto col-sm-10 m-sm-auto">
-                <form action="/login" method="post">
+                <form action="/login" method="post" onsubmit="return handleSubmit()">
                     <div class="mb-3">
                         <label class="form-label">Email</label>
-                        <input type="email" class="form-control" name="email" placeholder="Email">
+                        <input type="email" class="form-control" name="email" placeholder="Email" onblur="validateInput()">
+                        <p>Email should be valid: me@gmail.com</p>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Password</label>
                         <input type="password" class="form-control" name="password" placeholder="Password">
+                        <p>Password should be atleast 6 digits alphanumeric</p>
                     </div>
                     Don't have an account? <a href="/register">Sign Up</a>
                     <div class="row">
@@ -58,10 +61,22 @@
                             <button class="btn btn-primary" type="submit" name="button">Login</button>
                         </div>
                     </div>
+                    <div class="row">
+                      <div class="col text-center mb-4">
+                          <a href="/login/google" class="btn btn-outline-danger" type="submit" name="button">Login with Google+</a>
+                      </div>
+                  </div>
+                  <div class="row">
+                    <div class="col text-center">
+                        <a href="/login/facebook" class="btn btn-outline-primary" type="submit" name="button">Login with Facebook</a>
+                    </div>
+                </div>
                 </form>
             </div>
         </div>
     </div>
+<script src="../js/validations.js"></script>
 </body>
+
 
 </html>

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 14, 2021 at 03:21 PM
+-- Generation Time: Aug 19, 2021 at 10:09 AM
 -- Server version: 10.4.14-MariaDB
 -- PHP Version: 7.4.10
 
@@ -338,11 +338,10 @@ CREATE TABLE `plans_bought` (
 
 INSERT INTO `plans_bought` (`id`, `p_id`, `u_email`, `p_time`) VALUES
 (5, 2, 'rehmanmalik17@gmail.com', '12:00 PM'),
-(7, 1, 'rehmanmalik17@gmail.com', '14:30 PM'),
-(8, 1, 'rehmanmalik17@gmail.com', '14:30 PM'),
-(9, 2, 'rehmanmalik17@gmail.com', '14:30 PM'),
 (10, 2, 'rehmanmalik17@gmail.com', '14:30 PM'),
-(12, 1, 'rehmanmalik17@gmail.com', '18:30 PM');
+(12, 1, 'rehmanmalik17@gmail.com', '18:30 PM'),
+(15, 2, 'rehmanmalik17@gmail.com', '12:00 PM'),
+(16, 1, 'tss.sambrial8@gmail.com', '14:30 PM');
 
 -- --------------------------------------------------------
 
@@ -363,19 +362,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`u_email`, `u_password`, `u_name`, `u_address`, `u_phone`) VALUES
-('rehmanmalik1117@gmail.com', '03445265602e8e193e7a3382d489cc8d1b1bfc44', 'Rehman Ali', 'P.O khaas Bakhrevali Tehsil Sambrial Sialkot', '03476997578'),
-('rehmanmalik1327@gmail.com', '1', 'rehman_ali17', 'P.O khaas Bakhrevali Tehsil Sambrial Sialkot', '03476997578'),
-('rehmanmalik1711@gmail.com', '123456', 'rehman_ali17', 'P.O khaas Bakhrevali Tehsil Sambrial Sialkot', '03476997578'),
-('rehmanmalik1721@gmail.com', '12', 'rehman_ali17', 'P.O khaas Bakhrevali Tehsil Sambrial Sialkot', '03476997578'),
-('rehmanmalik17@gmail.com', '$2b$10$YGI1614VS16nW/7hqdAnlOWuKeXsrIflSGDOI.uj2oz79BK1ezxjS', 'Rehman Ali Arif', 'P.O khaas bakhrevali Tehsil Sambrial District Sialkot', '03476997578'),
-('rehmanmalik17@gmail.com1', '86f7e437faa5a7fce15d1ddcb9eaeaea377667b8', 'Hamza', 'P.O khaas Bakhrevali Tehsil Sambrial Sialkot', '03476997578'),
-('rehmanmalik2117@gmail.com', '$2b$10$YGI1614VS16nW/7hqdAnlOWuKeXsrIflSGDOI.uj2oz79BK1ezxjS', 'rehman_ali17', 'P.O khaas Bakhrevali Tehsil Sambrial Sialkot', '03476997578'),
-('rehmanmalik2217@gmail.com', 'malik 70', 'rehman_ali17', 'malik 70', '03476997578'),
-('rehmanmalik27@gmail.com', 'f713487095ef67c685773f9678202a34472047c3', 'Rehman Ali', 'P.O khaas Bakhrevali Tehsil Sambrial Sialkot', '03476997578'),
-('rehmanmalik3117@gmail.com', '12345', 'rehman_ali17', 'P.O khaas Bakhrevali Tehsil Sambrial Sialkot', '03476997578'),
-('rehmanmalik317@gmail.com', '123456', 'rehman_ali17', '123456', '03476997578'),
-('rehmanmalik37@gmail.com', '12345', 'rehman_ali17', 'P.O khaas Bakhrevali Tehsil Sambrial Sialkot', '03476997578'),
-('rehmanmalik417@gmail.com', 'asdfgh', 'rehman_ali17', 'asdfgh', '03476997578');
+('rehmanmalik17@gmail.com', '$2b$10$E3dkw824k7JniijYS/U8eO5gFB9WLAVTwTcM2i2eZUeeuffxyzeTC', 'Rehman Ali', 'P.O khaas bakhrevali Tehsil Sambrial District Sialkot', '03476997578'),
+('tss.sambrial8@gmail.com', '$2b$10$b9QMgR5uBdVEriN7wXFjZ.sGPiEyEAcYLf6dWED/rDMH4ZNDUquki', 'The Smart School Sambrial Campus', 'Sambrial', '03476997578');
 
 --
 -- Indexes for dumped tables
@@ -548,7 +536,7 @@ ALTER TABLE `messages`
 -- AUTO_INCREMENT for table `plans_bought`
 --
 ALTER TABLE `plans_bought`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- Constraints for dumped tables

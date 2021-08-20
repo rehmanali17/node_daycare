@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
     <link rel="stylesheet" href="../../css/bootstrap.min.css">
     <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/style.css">
     <link rel="icon" href="../../images/day-care1.jpg" type="image/gif" sizes="16x16">
 </head>
 <style>
@@ -23,7 +24,7 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-primary">
         <div class="container-fluid">
-          <a style="font-size: 35px; color:white;"  class="navbar-brand" href="/">DayCare</a>
+            <img src="../../uploads/<%= user.image_url %>" alt="User Image" class="img">
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
@@ -47,28 +48,39 @@
    <% if(msgs.length > 0){ %>
     <% msgs.forEach((msg)=>{ %>
         <p class="text-center w-100 alert alert-success"><%= msg.msg %></p>
-<% })} %> 
+<% })} %>
 
     <div class="row">
         <div class="col-lg-6 m-lg-auto col-md-8 m-md-auto col-sm-10 m-sm-auto">
                 
-            <form  method="post">
+            <form  method="post" onsubmit="return handleSubmit()" enctype="multipart/form-data">
                 <div class="mb-4">
                     <label for="name" class="form-label">Name</label>
-                    <input type="text" class="form-control" name="name" value="<%= user.u_name%>" required>
+                    <input type="text" class="form-control" name="name" value="<%= user.u_name%>">
+                    <p>Name should be valid</p>
                 </div>
                 <div class="mb-4">
                     <label for="password" class="form-label">Password</label>
-                    <input type="password" class="form-control" name="password" required>
+                    <input type="password" class="form-control" name="password" >
+                    <p>Password should be atleast 6 digits alphanumeric</p>
                 </div>
                 <div class="mb-4">
                     <label for="address" class="form-label">Address</label>
-                    <input type="text" class="form-control" name="address" value="<%= user.u_address%>" required>
+                    <input type="text" class="form-control" name="address" value="<%= user.u_address%>" >
+                    <p>Enter a valid Address</p>
                 </div>
                 <div class="mb-4">
                     <label for="phone" class="form-label">Phone</label>
-                    <input type="text" class="form-control" name="phone" value="<%= user.u_phone%>" required>
+                    <input type="text" class="form-control" name="phone" value="<%= user.u_phone%>">
+                    <p>Enter 11 digits phone number</p>
                 </div>
+                <div class="mb-1">
+                    <label class="form-label">Profile Picture</label>
+                    <input type="file" class="form-control" name="profile-pic">
+                </div>
+                <% if (errmsg) { %>
+                    <p class="invalidfile mb-1"><%= errmsg %></p>
+                <% } %>  
                 <div class="row">
                     <div class="col-sm-2 col-3 ml-auto mr-auto mb-5 mt-3">
                         <button class="btn btn-primary" type="submit" name="update-btn">Update</button>
@@ -78,5 +90,9 @@
         </div>
     </div>
 </div>
+<script src="../../js/validations.js"></script>
+<!-- <script>
+    console.log()
+</script> -->
 </body>
 </html>
