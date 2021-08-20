@@ -22,8 +22,15 @@
     </style>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-primary">
+        <% 
+        if(user.image_url[0] == 'p'){
+            url = "../../uploads/" + user.image_url
+        }else if(user.image_url[0] == 'h'){
+            url = user.image_url
+        }
+        %> 
         <div class="container-fluid">
-            <img src="../../uploads/<%= user.image_url %>" alt="User Image" class="img">
+            <img src="<%= url %>" alt="User Image" class="img">
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
